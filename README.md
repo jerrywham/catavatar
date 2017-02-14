@@ -1,5 +1,5 @@
-Cat-Avatar-Generator
-====================
+Cat-Avatar-Generator : Plugin for PluXml 5.5 and 5.6
+====================================================
 
 ![cover picture](http://www.peppercarrot.com/data/images/lab/2016-11-30_cdn/2016-11-29_the-quest-to-free-peppercarrot-website_02a-avatar.jpg)
 
