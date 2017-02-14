@@ -16,13 +16,13 @@ This PHP is licensed under the short and simple permissive:
  
 ## Usage:
 
-Call the original script this way: 
+Call the original script this way (if you want to use it without PluXml): 
 ```
 echo '<img height="70px" width="70px" src="your/path/to/cat-avatar-generator?seed='.$var.'"/>';
 ```
 _(Note: for the seed, I advice to use author's name to not expose email or sensitive datas, even hashed on a public code.)_
 
-For PluXml, modify, in your theme, the 'commentaires.php' file as follow :
+For PluXml, you don't need to call img tag. Only modify, in your theme, the 'commentaires.php' file as follow:
 ```php
 <?php if(!defined('PLX_ROOT')) exit; ?>
 
@@ -41,6 +41,11 @@ For PluXml, modify, in your theme, the 'commentaires.php' file as follow :
 				<?php if (isset($plxMotor->plxPlugins->aPlugins['catavatar'])) {echo $plxShow->plxMotor->plxRecord_coms->f('catavatar'); }; ?>
 
 // (...) the rest of the page is the same as original commentaires.php file 
+```
+
+The important part of this code is the line:
+```php
+<?php if (isset($plxMotor->plxPlugins->aPlugins['catavatar'])) {echo $plxShow->plxMotor->plxRecord_coms->f('catavatar'); }; ?>
 ```
 
 ## How to edit artworks
