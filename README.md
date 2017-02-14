@@ -16,11 +16,32 @@ This PHP is licensed under the short and simple permissive:
  
 ## Usage:
 
-Call the script this way: 
+Call the original script this way: 
 ```
 echo '<img height="70px" width="70px" src="your/path/to/cat-avatar-generator?seed='.$var.'"/>';
 ```
 _(Note: for the seed, I advice to use author's name to not expose email or sensitive datas, even hashed on a public code.)_
+
+For PluXml, modify, in your theme, the 'commentaires.php' file as follow :
+```php
+<?php if(!defined('PLX_ROOT')) exit; ?>
+
+	<?php if($plxShow->plxMotor->plxRecord_coms): ?>
+
+		<h3 id="comments">
+			<?php echo $plxShow->artNbCom(); ?>
+		</h3>
+
+		<?php while($plxShow->plxMotor->plxRecord_coms->loop()): # On boucle sur les commentaires ?>
+
+		<div id="<?php $plxShow->comId(); ?>" class="<?php if (!isset($plxMotor->plxPlugins->aPlugins['catavatar'])) {echo 'comment ';}?><?php $plxShow->comLevel(); ?>">
+
+			<div id="com-<?php $plxShow->comIndex(); ?>">
+
+				<?php if (isset($plxMotor->plxPlugins->aPlugins['catavatar'])) {echo $plxShow->plxMotor->plxRecord_coms->f('catavatar'); }; ?>
+
+// (...) the rest of the page is the same as original commentaires.php file 
+```
 
 ## How to edit artworks
 
