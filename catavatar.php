@@ -22,7 +22,7 @@ class catavatar extends plxPlugin {
 	public function plxMotorParseCommentaire()
 	{	
 		$string ="
-		\$imageurl = hexdec(substr(md5(\$com['author']),0,6));
+		\$imageurl = hexdec(substr(md5(mb_strtolower(\$com['author'],PLX_CHARSET)),0,6));
 		\$imageurl = preg_replace('![^A-Za-z0-9\._-]!', '', \$imageurl); 
 		\$imageurl = substr(\$imageurl,0,35);
 		\$cachefile = '".PLX_ROOT.$this->getParam('cachepath')."'.\$imageurl;
@@ -61,7 +61,7 @@ class catavatar extends plxPlugin {
 
 	public function build_cat($seed='') 
 	{
-		$imageurl = hexdec(substr(md5($seed),0,6));
+		$imageurl = hexdec(substr(md5(mb_strtolower($seed,PLX_CHARSET)),0,6));
 		$imageurl = preg_replace('![^A-Za-z0-9\._-]!', '', $imageurl); 
 		$imageurl = substr($imageurl,0,35);
 
