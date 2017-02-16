@@ -16,9 +16,66 @@ class catavatar extends plxPlugin {
 		
 		# Déclaration d'un hook (existant ou nouveau)
 		$this->addHook('plxMotorParseCommentaire', 'plxMotorParseCommentaire');	
+		$this->addHook('AdminCommentNew', 'AdminCommentNew');	
+		$this->addHook('AdminCommentNewFoot', 'AdminCommentNewFoot');	
 	}
 	
 	# HOOKS
+	public function AdminCommentNew()
+	{
+		echo '<?php ob_start(); ?>';
+	}
+	public function AdminCommentNewFoot()
+	{
+		
+		$string ="<?php ob_clean();?>
+
+					</div>
+				</div>
+			</fieldset>
+		</form>
+
+		<?php if(isset(\$plxAdmin->plxRecord_coms)) : # On a des commentaires ?>
+			<h3><?php echo L_ARTICLE_COMMENTS_LIST ?></h3>
+			<?php while(\$plxAdmin->plxRecord_coms->loop()) : # On boucle ?>
+				<?php \$comId = \$plxAdmin->plxRecord_coms->f('article').'.'.\$plxAdmin->plxRecord_coms->f('numero'); ?>
+				<div id=\"c<?php echo \$comId ?>\" class=\"<?php if (!isset(\$plxAdmin->plxPlugins->aPlugins['catavatar'])) {echo 'comment ';}?><?php echo ((isset(\$_GET['c']) AND \$_GET['c']==\$comId)?' current':'') ?> level-<?php echo \$plxAdmin->plxRecord_coms->f('level'); ?>\">
+					<div id=\"com-<?php echo \$plxAdmin->plxRecord_coms->f('index'); ?>\">
+					<?php if (isset(\$plxAdmin->plxPlugins->aPlugins['catavatar'])) {echo \$plxAdmin->plxRecord_coms->f('catavatar'); }; ?>
+						<small>
+							<span class=\"nbcom\">#<?php echo \$plxAdmin->plxRecord_coms->i+1 ?></span>&nbsp;
+							<time datetime=\"<?php echo plxDate::formatDate(\$plxAdmin->plxRecord_coms->f('date'), '#num_year(4)-#num_month-#num_day #hour:#minute'); ?>\"><?php echo plxDate::formatDate(\$plxAdmin->plxRecord_coms->f('date'), '#day #num_day #month #num_year(4) &agrave; #hour:#minute'); ?></time> -
+							<?php echo L_COMMENT_WRITTEN_BY ?>&nbsp;<strong><?php echo \$plxAdmin->plxRecord_coms->f('author'); ?></strong>
+							- <a href=\"comment.php<?php echo (!empty(\$_GET['a']))?'?c='.\$comId.'&amp;a='.\$_GET['a']:'?c='.\$comId; ?>\" title=\"<?php echo L_COMMENT_EDIT_TITLE ?>\"><?php echo L_COMMENT_EDIT ?></a>
+							- <a href=\"#form_comment\" onclick=\"replyCom('<?php echo \$plxAdmin->plxRecord_coms->f('index') ?>')\"><?php echo L_COMMENT_ANSWER ?></a>
+						</small>
+						<blockquote class=\"type-<?php echo \$plxAdmin->plxRecord_coms->f('type'); ?>\"><?php echo nl2br(\$plxAdmin->plxRecord_coms->f('content')); ?></blockquote>
+					</div>
+					<?php eval(\$plxAdmin->plxPlugins->callHook('AdminCommentNewList')) # Hook Plugins ?>
+				</div>
+			<?php endwhile; ?>
+		<?php endif; ?>
+
+<script>
+function replyCom(idCom) {
+	document.getElementById('id_answer').innerHTML='<?php echo L_REPLY_TO ?> : ';
+	document.getElementById('id_answer').innerHTML+=document.getElementById('com-'+idCom).innerHTML;
+	document.getElementById('id_answer').innerHTML+='<a href=\"javascript:void(0)\" onclick=\"cancelCom()\"><?php echo L_CANCEL ?></a>';
+	document.getElementById('id_answer').style.display='inline-block';
+	document.getElementById('id_parent').value=idCom;
+	document.getElementById('id_content').focus();
+}
+function cancelCom() {
+	document.getElementById('id_answer').style.display='none';
+	document.getElementById('id_parent').value='';
+}
+var parent = document.getElementById('id_parent').value;
+if(parent!='') { replyCom(parent) }
+</script>
+		";
+		echo $string;
+	}
+
 	public function plxMotorParseCommentaire()
 	{	
 		$string ="
