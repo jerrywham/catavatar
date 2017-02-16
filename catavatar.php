@@ -22,9 +22,16 @@ class catavatar extends plxPlugin {
 	public function plxMotorParseCommentaire()
 	{	
 		$string ="
-		\$imageurl = hexdec(substr(md5(mb_strtolower(\$com['author'],PLX_CHARSET)),0,6));
+		\$plxCatavatarPlugin = \$this->plxPlugins->aPlugins['catavatar'];
+		if (\$com['type'] == 'admin' ) {
+			\$loginToAvatar = \$plxCatavatarPlugin->getParam('admin'.\$com['author']);
+		} else {
+			\$loginToAvatar = \$com['author'];
+		}
+		\$imageurl = hexdec(substr(md5(mb_strtolower(\$loginToAvatar,PLX_CHARSET)),0,6));
 		\$imageurl = preg_replace('![^A-Za-z0-9\._-]!', '', \$imageurl); 
 		\$imageurl = substr(\$imageurl,0,35);
+
 		\$cachefile = '".PLX_ROOT.$this->getParam('cachepath')."'.\$imageurl;
 		\$cachetime = 604800; # 1 week (1 day = 86400)
 
@@ -32,10 +39,9 @@ class catavatar extends plxPlugin {
 		if (file_exists(\$cachefile) && time() - \$cachetime < filemtime(\$cachefile)) {
 			\$chavatar = file_get_contents(\$cachefile);
 		} else {
-			\$plxCatavatarPlugin = \$this->plxPlugins->aPlugins['catavatar'];
 
 			# render the picture:
-			\$chavatar = \$plxCatavatarPlugin->build_cat(\$com['author']);
+			\$chavatar = \$plxCatavatarPlugin->build_cat(\$imageurl);
 
 			# Save /cache the output to a file
 			file_put_contents(\$cachefile, \$chavatar);
@@ -61,10 +67,7 @@ class catavatar extends plxPlugin {
 
 	public function build_cat($seed='') 
 	{
-		$imageurl = hexdec(substr(md5(mb_strtolower($seed,PLX_CHARSET)),0,6));
-		$imageurl = preg_replace('![^A-Za-z0-9\._-]!', '', $imageurl); 
-		$imageurl = substr($imageurl,0,35);
-
+		$imageurl = $seed;
 		// init random seed
 		if($seed) srand( $imageurl );
 
